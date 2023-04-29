@@ -1,13 +1,13 @@
 <?php
 
-namespace PluginEver\QueryBuilder;
+namespace WP_Forge\QueryBuilder;
 defined( 'ABSPATH' ) || exit();
 
 use ArrayAccess;
 use IteratorAggregate;
-use PluginEver\QueryBuilder\Interfaces\Arrayable;
-use PluginEver\QueryBuilder\Interfaces\JSONable;
-use PluginEver\QueryBuilder\Interfaces\Stringable;
+use WP_Forge\QueryBuilder\Interfaces\Arrayable;
+use WP_Forge\QueryBuilder\Interfaces\JSONable;
+use WP_Forge\QueryBuilder\Interfaces\Stringable;
 
 class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable, Stringable {
 	/**
@@ -90,8 +90,8 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	 * Filter items by the given key value pair.
 	 *
 	 * @param string $key
-	 * @param mixed $value
-	 * @param bool $strict
+	 * @param mixed  $value
+	 * @param bool   $strict
 	 *
 	 * @return static
 	 */
@@ -106,7 +106,7 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	 * Filter items by the given key value pair using loose comparison.
 	 *
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 *
 	 * @return static
 	 */
@@ -280,11 +280,11 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	 *
 	 * @param int $amount
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public function random( $amount = 1 ) {
 		if ( $this->isEmpty() ) {
-			return;
+			return array();
 		}
 
 		$keys = array_rand( $this->items, $amount );
@@ -296,7 +296,7 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	 * Reduce the collection to a single value.
 	 *
 	 * @param callable $callback
-	 * @param mixed $initial
+	 * @param mixed    $initial
 	 *
 	 * @return mixed
 	 */
@@ -336,7 +336,7 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	 * Search the collection for a given value and return the corresponding key if successful.
 	 *
 	 * @param mixed $value
-	 * @param bool $strict
+	 * @param bool  $strict
 	 *
 	 * @return mixed
 	 */
@@ -377,8 +377,8 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	/**
 	 * Slice the underlying collection array.
 	 *
-	 * @param int $offset
-	 * @param int $length
+	 * @param int  $offset
+	 * @param int  $length
 	 * @param bool $preserveKeys
 	 *
 	 * @return static
@@ -390,7 +390,7 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	/**
 	 * Chunk the underlying collection array.
 	 *
-	 * @param int $size
+	 * @param int  $size
 	 * @param bool $preserveKeys
 	 *
 	 * @return static
@@ -421,8 +421,8 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	/**
 	 * Splice portion of the underlying collection array.
 	 *
-	 * @param int $offset
-	 * @param int $length
+	 * @param int   $offset
+	 * @param int   $length
 	 * @param mixed $replacement
 	 *
 	 * @return static
@@ -581,23 +581,23 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	/**
 	 * Returns collection as a string.
 	 *
-	 * @param string
+	 * @return string
 	 *
 	 * @since 1.0.2
 	 *
 	 */
 	public function __toString() {
-		return json_encode( $this->__toArray() );
+		return (string) json_encode( $this->__toArray() );
 	}
 
 	/**
 	 * Returns object as JSON string.
 	 *
 	 * @param int $options JSON encoding options. See @link.
-	 * @param int $depth JSON encoding depth. See @link.
+	 * @param int $depth   JSON encoding depth. See @link.
 	 *
 	 * @return string
-	 * @link http://php.net/manual/en/function.json-encode.php
+	 * @link  http://php.net/manual/en/function.json-encode.php
 	 *
 	 * @since 1.0.2
 	 *
@@ -610,10 +610,10 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	 * Returns object as JSON string.
 	 *
 	 * @param int $options JSON encoding options. See @link.
-	 * @param int $depth JSON encoding depth. See @link.
+	 * @param int $depth   JSON encoding depth. See @link.
 	 *
 	 * @return string
-	 * @link http://php.net/manual/en/function.json-encode.php
+	 * @link  http://php.net/manual/en/function.json-encode.php
 	 *
 	 * @since 1.0.2
 	 *
@@ -623,8 +623,8 @@ class Collection implements ArrayAccess, Arrayable, IteratorAggregate, JSONable,
 	}
 
 	/**
-	 * @param $target
-	 * @param $key
+	 * @param      $target
+	 * @param      $key
 	 * @param null $default
 	 *
 	 * @return array

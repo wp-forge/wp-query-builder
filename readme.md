@@ -1,39 +1,38 @@
-<p align="center">
-<a href="http://pluginever.com" target="_blank">
-    <img width="200px" src="https://pluginever.com/wp-content/themes/pluginever/images/pluginever-logo.svg">
-</a>
-</p>
-
 # WP Query Builder
-WP Query Builder is a lightweight and efficient SQL Query Builder based on wpdb for WordPress. It supports complicated query generation.
 
-[![Build Status](https://travis-ci.org/sultann/wp-query-builder.svg?branch=master)](https://travis-ci.org/sultann/wp-query-builder)
-[![Packagist](https://img.shields.io/packagist/dt/sultann/wp-query-builder.svg)](https://packagist.org/packages/sultann/wp-query-builder)
-[![Packagist](https://img.shields.io/packagist/l/sultann/wp-query-builder.svg)](https://github.com/sultann/wp-query-builder/blob/master/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/sultann/wp-query-builder.svg)](https://github.com/sultann/wp-query-builder/releases)
+**A lightweight and efficient SQL query builder for WordPress.**
+
+This is a fork of the original project (https://github.com/sultann/wp-query-builder) which appears to be unmaintained.
 
 ## Installation 
-WP Query Builder follows `PSR-4` autoloading and can be installed using composer:
+WP Query Builder uses `PSR-4` autoloading and can be installed using composer:
 
 ```
-$ composer require sultann/wp-query-builder
+$ composer require wp-forge/wp-query-builder
 ```
 
-## Documentation 💡
-### Initialize
-Initialize query builder. init method takes a string argument using that later you can do action/filter based on your requirement.
-without argument.
+## Documentation
+
+### Initialization
+
+The init method takes a string argument. You can use that later to use actions/filters specific to your query 
+builder instance.
+
+Without argument.
+
 ```php
-$query = \PluginEver\QueryBuilder\Query::init();
+$query = \WP_Forge\QueryBuilder\Query::init();
 ```
-with argument
+
+With argument
+
 ```php
-$query = \PluginEver\QueryBuilder\Query::init('query_users');
+$query = \WP_Forge\QueryBuilder\Query::init('query_users');
 ```
 
 ### Select
 This will build the query, execute and returns all users from users table with applying table prefix automatically.
-by default it select all(*) but you can define what to select from the query; If you are selecting all then you can omit the select statement.
+by default, it selects all(*) but you can define what to select from the query; If you are selecting all then you can omit the select statement.
 ```php
 $results = $query->select('*')
                  ->from('users')
@@ -285,7 +284,3 @@ $results = $query->from('posts')
                  ->search('Hello Word', array('post_title', 'post_content')) // it will search Hello & World both
                  ->delete();
 ```
-
-## License
-
-The MIT License (MIT). Please see [License File](https://github.com/sultann/wp-query-builder/blob/master/LICENSE) for more information.

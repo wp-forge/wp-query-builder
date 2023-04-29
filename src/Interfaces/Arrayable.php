@@ -1,6 +1,6 @@
 <?php
 
-namespace PluginEver\QueryBuilder\Interfaces;
+namespace WP_Forge\QueryBuilder\Interfaces;
 
 interface Arrayable {
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-namespace PluginEver\QueryBuilder;
+namespace WP_Forge\QueryBuilder;
 
 defined( 'ABSPATH' ) || exit();
 
@@ -87,7 +87,7 @@ class Query {
 	 * Adds from statement.
 	 *
 	 * @param string $name
-	 * @param bool $add_prefix
+	 * @param bool   $add_prefix
 	 *
 	 * @since 1.0.0
 	 *
@@ -103,8 +103,8 @@ class Query {
 	/**
 	 * Adds from statement.
 	 *
-	 * @param string $from
-	 * @param bool $add_prefix Should DB prefix be added.
+	 * @param string  $from
+	 * @param bool    $add_prefix Should DB prefix be added.
 	 *
 	 * @return Query this for chaining.
 	 * @global object $wpdb
@@ -155,10 +155,10 @@ class Query {
 	 *       $q->where('ID', '>', 21);
 	 * })
 	 *
-	 * @param string $column The SQL column
-	 * @param mixed $param1 Operator or value depending if $param2 isset.
-	 * @param mixed $param2 The value if $param1 is an operator.
-	 * @param string $joint the where type ( and, or )
+	 * @param string|array|object $column The SQL column
+	 * @param mixed               $param1 Operator or value depending if $param2 isset.
+	 * @param mixed               $param2 The value if $param1 is an operator.
+	 * @param string              $joint  the where type ( and, or )
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -189,16 +189,18 @@ class Query {
 			call_user_func_array( $column, array( &$subquery ) );
 			$condition = '';
 			for ( $i = 0; $i < count( $subquery->where ); ++ $i ) {
-				$condition .= ( $i === 0 ? ' ' : ' ' . $subquery->where[ $i ]['joint'] . ' ' )
-				              . $subquery->where[ $i ]['condition'];
+				$condition .= ( $i === 0 ? ' ' : ' ' . $subquery->where[ $i ]['joint'] . ' ' ) . $subquery->where[ $i ]['condition'];
 			}
 
-			$this->where = array_merge( $this->where, array(
+			$this->where = array_merge(
+				$this->where,
 				array(
-					'joint'     => $joint,
-					'condition' => "($condition)"
+					array(
+						'joint'     => $joint,
+						'condition' => "($condition)"
+					)
 				)
-			) );
+			);
 
 			return $this;
 		}
@@ -259,15 +261,12 @@ class Query {
 
 		//first check if is array if so then make a string out of array
 		//if not array but null then set value as null
-		//if not null does it contains . it could be column so dont parse as string
+		//if not null does it contain . it could be column so don't parse as string
 		//If not column then use wpdb prepare
 		//if contains $prefix
 		$contain_join = preg_replace( '/^(\s?AND ?|\s?OR ?)|\s$/i', '', $param2 );
 
-		$param2 = is_array( $param2 ) ? ( '("' . implode( '","', $param2 ) . '")' ) : ( $param2 === null
-			? 'null'
-			: ( strpos( $param2, '.' ) !== false || strpos( $param2, $wpdb->prefix ) !== false ? $param2 : $wpdb->prepare( is_numeric( $param2 ) ? '%d' : '%s', $param2 ) )
-		);
+		$param2 = is_array( $param2 ) ? ( '("' . implode( '","', $param2 ) . '")' ) : ( $param2 === null ? 'null' : ( strpos( $param2, '.' ) !== false || strpos( $param2, $wpdb->prefix ) !== false ? $param2 : $wpdb->prepare( is_numeric( $param2 ) ? '%d' : '%s', $param2 ) ) );
 
 		$this->where[] = [
 			'joint'     => $joint,
@@ -284,8 +283,8 @@ class Query {
 	 * This is the same as the normal where just with a fixed type
 	 *
 	 * @param string $column The SQL column
-	 * @param mixed $param1
-	 * @param mixed $param2
+	 * @param mixed  $param1
+	 * @param mixed  $param2
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -299,8 +298,8 @@ class Query {
 	 * This is the same as the normal where just with a fixed type
 	 *
 	 * @param string $column The SQL column
-	 * @param mixed $param1
-	 * @param mixed $param2
+	 * @param mixed  $param1
+	 * @param mixed  $param2
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -314,7 +313,7 @@ class Query {
 	 *     ->whereIn('id', [42, 38, 12])
 	 *
 	 * @param string $column
-	 * @param array $options
+	 * @param array  $options
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -333,7 +332,7 @@ class Query {
 	 *     ->whereNotIn('id', [42, 38, 12])
 	 *
 	 * @param string $column
-	 * @param array $options
+	 * @param array  $options
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -445,7 +444,7 @@ class Query {
 
 	/**
 	 *
-	 * @param $query
+	 * @param        $query
 	 * @param string $joint
 	 *
 	 * @since 1.0.1
@@ -465,13 +464,13 @@ class Query {
 	 *
 	 *     ->join('avatars', 'users.id', '=', 'avatars.user_id')
 	 *
-	 * @param array|string $table The table to join. (can contain an alias definition.)
-	 * @param string $localKey
-	 * @param string $operator The operator (=, !=, <, > etc.)
-	 * @param string $referenceKey
-	 * @param string $type The join type (inner, left, right, outer)
-	 * @param string $joint The join AND or Or
-	 * @param bool $add_prefix Add table prefix or not
+	 * @param array|string     $table      The table to join. (can contain an alias definition.)
+	 * @param string |\Closure $localKey
+	 * @param string           $operator   The operator (=, !=, <, > etc.)
+	 * @param string           $referenceKey
+	 * @param string           $type       The join type (inner, left, right, outer)
+	 * @param string           $joint      The join AND or Or
+	 * @param bool             $add_prefix Add table prefix or not
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -506,14 +505,10 @@ class Query {
 		// value holder and make param1 to the = operator.
 		if ( is_null( $referenceKey ) ) {
 			$referenceKey = $operator;
-			$operator = '=';
+			$operator     = '=';
 		}
 
-		$referenceKey = is_array( $referenceKey ) ? ( '(\'' . implode( '\',\'', $referenceKey ) . '\')' )
-			: ( $referenceKey === null
-				? 'null'
-				: ( strpos( $referenceKey, '.' ) !== false || strpos( $referenceKey, $wpdb->prefix ) !== false ? $referenceKey : $wpdb->prepare( is_numeric( $referenceKey ) ? '%d' : '%s', $referenceKey ) )
-			);
+		$referenceKey = is_array( $referenceKey ) ? ( '(\'' . implode( '\',\'', $referenceKey ) . '\')' ) : ( $referenceKey === null ? 'null' : ( strpos( $referenceKey, '.' ) !== false || strpos( $referenceKey, $wpdb->prefix ) !== false ? $referenceKey : $wpdb->prepare( is_numeric( $referenceKey ) ? '%d' : '%s', $referenceKey ) ) );
 
 		$join['on'][] = [
 			'joint'     => $joint,
@@ -528,10 +523,10 @@ class Query {
 	/**
 	 * Left join same as join with special type
 	 *
-	 * @param array|string $table The table to join. (can contain an alias definition.)
-	 * @param string $localKey
-	 * @param string $operator The operator (=, !=, <, > etc.)
-	 * @param string $referenceKey
+	 * @param array|string $table    The table to join. (can contain an alias definition.)
+	 * @param string       $localKey
+	 * @param string       $operator The operator (=, !=, <, > etc.)
+	 * @param string       $referenceKey
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -542,10 +537,10 @@ class Query {
 	/**
 	 * Alias of the `join` method with join type right.
 	 *
-	 * @param array|string $table The table to join. (can contain an alias definition.)
-	 * @param string $localKey
-	 * @param string $operator The operator (=, !=, <, > etc.)
-	 * @param string $referenceKey
+	 * @param array|string $table    The table to join. (can contain an alias definition.)
+	 * @param string       $localKey
+	 * @param string       $operator The operator (=, !=, <, > etc.)
+	 * @param string       $referenceKey
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -556,10 +551,10 @@ class Query {
 	/**
 	 * Alias of the `join` method with join type inner.
 	 *
-	 * @param array|string $table The table to join. (can contain an alias definition.)
-	 * @param string $localKey
-	 * @param string $operator The operator (=, !=, <, > etc.)
-	 * @param string $referenceKey
+	 * @param array|string $table    The table to join. (can contain an alias definition.)
+	 * @param string       $localKey
+	 * @param string       $operator The operator (=, !=, <, > etc.)
+	 * @param string       $referenceKey
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -570,10 +565,10 @@ class Query {
 	/**
 	 * Alias of the `join` method with join type outer.
 	 *
-	 * @param array|string $table The table to join. (can contain an alias definition.)
-	 * @param string $localKey
-	 * @param string $operator The operator (=, !=, <, > etc.)
-	 * @param string $referenceKey
+	 * @param array|string $table    The table to join. (can contain an alias definition.)
+	 * @param string       $localKey
+	 * @param string       $operator The operator (=, !=, <, > etc.)
+	 * @param string       $referenceKey
 	 *
 	 * @return Query The current query builder.
 	 */
@@ -583,7 +578,7 @@ class Query {
 
 	/**
 	 *
-	 * @param $query
+	 * @param        $query
 	 * @param string $joint
 	 *
 	 * @since 1.0.1
@@ -603,7 +598,7 @@ class Query {
 	 *     ->groupBy('category')
 	 *     ->gorupBy(['category', 'price'])
 	 *
-	 * @param string $field
+	 * @param string|array $field
 	 *
 	 * @return Query this for chaining.
 	 * @since 1.0.0
@@ -655,7 +650,7 @@ class Query {
 	 * @param string $direction
 	 *
 	 * @return Query this for chaining.
-	 * @throws Exception
+	 * @throws \Exception
 	 * @since 1.0.0
 	 *
 	 */
@@ -740,7 +735,7 @@ class Query {
 	 *
 	 * ->find('manikdrmc@gmail.com', 'email')
 	 *
-	 * @param int $id
+	 * @param int    $id
 	 * @param string $key
 	 *
 	 * @return mixed
@@ -788,14 +783,14 @@ class Query {
 	/**
 	 * Returns results from builder statements.
 	 *
-	 * @param int $output WPDB output type.
-	 * @param callable $row_map Function callable to filter or map results to.
-	 * @param bool $calc_rows Flag that indicates to SQL if rows should be calculated or not.
+	 * @param int      $output    WPDB output type.
+	 * @param callable $row_map   Function callable to filter or map results to.
+	 * @param bool     $calc_rows Flag that indicates to SQL if rows should be calculated or not.
 	 *
 	 * @return Object || Array
-	 * @since 1.0.0
+	 * @since          1.0.0
 	 *
-	 * @global object $wpdb
+	 * @global object  $wpdb
 	 *
 	 */
 	public function get( $output = OBJECT, $row_map = null, $calc_rows = false ) {
@@ -881,8 +876,8 @@ class Query {
 	/**
 	 * Just get a single value from the result
 	 *
-	 * @param string $column The index of the column.
-	 * @param bool $calc_rows Flag that indicates to SQL if rows should be calculated or not.
+	 * @param string $column    The index of the column.
+	 * @param bool   $calc_rows Flag that indicates to SQL if rows should be calculated or not.
 	 *
 	 * @return mixed The columns value
 	 */
@@ -908,8 +903,8 @@ class Query {
 	/**
 	 * Returns a value.
 	 *
-	 * @param int $x Column of value to return. Indexed from 0.
-	 * @param int $y Row of value to return. Indexed from 0.
+	 * @param int     $x Column of value to return. Indexed from 0.
+	 * @param int     $y Row of value to return. Indexed from 0.
 	 *
 	 * @return mixed
 	 * @global object $wpdb
@@ -949,9 +944,9 @@ class Query {
 	public function updateOrInsert( $data ) {
 		if ( $this->first() ) {
 			return $this->update( $data );
-		} else {
-			return $this->insert( $data );
 		}
+
+		return $this->insert( $data );
 	}
 
 	/**
@@ -964,9 +959,9 @@ class Query {
 	public function findOrInsert( $data ) {
 		if ( $this->first() ) {
 			return $this->update( $data );
-		} else {
-			return $this->insert( $data );
 		}
+
+		return $this->insert( $data );
 	}
 
 	/**
@@ -1052,7 +1047,7 @@ class Query {
 	/**
 	 * Returns flag indicating if query has been executed.
 	 *
-	 * @param string $sql
+	 * @param string  $sql
 	 *
 	 * @return bool
 	 * @since 1.0.0
@@ -1101,11 +1096,11 @@ class Query {
 
 	/**
 	 * Returns found rows in last query, if SQL_CALC_FOUND_ROWS is used and is supported.
-	 * @return array
-	 * @global object $wpdb
 	 *
+	 * @return string|null
 	 * @since 1.0.0
 	 *
+	 * @global object $wpdb
 	 */
 	public function rows_found() {
 		global $wpdb;
@@ -1178,7 +1173,7 @@ class Query {
 	/**
 	 * Insert data.
 	 *
-	 * @param $data
+	 * @param       $data
 	 * @param array $format
 	 *
 	 * @return bool|int
@@ -1208,7 +1203,7 @@ class Query {
 	 * Builds query's select statement.
 	 *
 	 * @param string &$query
-	 * @param bool $calc_rows
+	 * @param bool    $calc_rows
 	 *
 	 * @since 1.0.0
 	 *
@@ -1361,7 +1356,7 @@ class Query {
 	 * Sanitize value.
 	 *
 	 * @param string|bool $callback Sanitize callback.
-	 * @param mixed $value
+	 * @param mixed       $value
 	 *
 	 * @return mixed
 	 * @since 1.0.0
