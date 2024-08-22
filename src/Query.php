@@ -264,7 +264,6 @@ class Query {
 		//if not null does it contain . it could be column so don't parse as string
 		//If not column then use wpdb prepare
 		//if contains $prefix
-		$contain_join = preg_replace( '/^(\s?AND ?|\s?OR ?)|\s$/i', '', $param2 );
 
 		$param2 = is_array( $param2 ) ? ( '("' . implode( '","', $param2 ) . '")' ) : ( $param2 === null ? 'null' : ( strpos( $param2, '.' ) !== false || strpos( $param2, $wpdb->prefix ) !== false ? $param2 : $wpdb->prepare( is_numeric( $param2 ) ? '%d' : '%s', $param2 ) ) );
 
